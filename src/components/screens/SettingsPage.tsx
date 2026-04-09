@@ -1,8 +1,33 @@
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Save, User, BookOpen, Clock, Shield, Bell, Globe, Trash2, Edit2 } from 'lucide-react';
-import { MOCK_TEACHERS } from '../../constants';
+import { Teacher } from '../../types';
 
-export default function SettingsPage() {
+interface SettingsPageProps {
+  teachers: Teacher[];
+  onAddTeacher: (teacher: Teacher) => void;
+  onRemoveTeacher: (id: string) => void;
+}
+
+export default function SettingsPage({ teachers, onAddTeacher, onRemoveTeacher }: SettingsPageProps) {
+  const [isAdding, setIsAdding] = useState(false);
+  const [name, setName] = useState('');
+  const [subject, setSubject] = useState('');
+
+  const handleAdd = () => {
+    if (name && subject) {
+      onAddTeacher({
+        id: `t-${Math.random()}`,
+        name,
+        subject,
+        availability: ['Monday', 'Wednesday', 'Friday']
+      });
+      setName('');
+      setSubject('');
+      setIsAdding(false);
+    }
+  };
+
   return (
     <div className="p-8 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-10">
@@ -44,10 +69,43 @@ export default function SettingsPage() {
               <h3 className="font-bold flex items-center gap-2">
                 <User size={18} className="text-blue-400" /> Teacher Directory
               </h3>
-              <button className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors">
-                + Add New Teacher
+              <button 
+                onClick={() => setIsAdding(!isAdding)}
+                className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                {isAdding ? 'Cancel' : '+ Add New Teacher'}
               </button>
             </div>
+
+            {isAdding && (
+              <motion.div 
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                className="p-6 bg-blue-600/5 border-b border-white/10 flex flex-wrap gap-4"
+              >
+                <input 
+                  type="text" 
+                  placeholder="Teacher Name" 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="flex-1 min-w-[200px] bg-white/5 border border-white/10 rounded-xl px-4 py-2 outline-none focus:border-blue-500/50 text-sm"
+                />
+                <input 
+                  type="text" 
+                  placeholder="Subject" 
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  className="flex-1 min-w-[200px] bg-white/5 border border-white/10 rounded-xl px-4 py-2 outline-none focus:border-blue-500/50 text-sm"
+                />
+                <button 
+                  onClick={handleAdd}
+                  className="px-6 py-2 bg-blue-600 rounded-xl text-sm font-bold hover:bg-blue-500 transition-all"
+                >
+                  Add
+                </button>
+              </motion.div>
+            )}
+
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
@@ -59,7 +117,7 @@ export default function SettingsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {MOCK_TEACHERS.map((teacher) => (
+                  {teachers.map((teacher) => (
                     <tr key={teacher.id} className="group hover:bg-white/5 transition-colors">
                       <td className="px-6 py-4">
                         <span className="text-sm font-bold text-slate-200">{teacher.name}</span>
@@ -86,7 +144,10 @@ export default function SettingsPage() {
                           <button className="p-2 hover:bg-blue-600/20 text-blue-400 rounded-lg transition-all">
                             <Edit2 size={14} />
                           </button>
-                          <button className="p-2 hover:bg-red-600/20 text-red-400 rounded-lg transition-all">
+                          <button 
+                            onClick={() => onRemoveTeacher(teacher.id)}
+                            className="p-2 hover:bg-red-600/20 text-red-400 rounded-lg transition-all"
+                          >
                             <Trash2 size={14} />
                           </button>
                         </div>

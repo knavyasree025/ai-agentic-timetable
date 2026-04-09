@@ -2,7 +2,12 @@ import { motion } from 'motion/react';
 import { Bot, ShieldAlert, Zap, Send, Terminal, Activity, CheckCircle2, Loader2 } from 'lucide-react';
 import { MOCK_AGENTS } from '../../constants';
 
-export default function AgentDashboard() {
+interface AgentDashboardProps {
+  isGenerating: boolean;
+  onComplete: () => void;
+}
+
+export default function AgentDashboard({ isGenerating, onComplete }: AgentDashboardProps) {
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-10">
@@ -12,11 +17,19 @@ export default function AgentDashboard() {
         </div>
         <div className="flex items-center gap-4">
           <div className="px-4 py-2 glass rounded-xl flex items-center gap-2">
-            <Activity size={16} className="text-blue-400" />
-            <span className="text-sm font-medium">System Load: 42%</span>
+            <Activity size={16} className={isGenerating ? 'text-blue-400 animate-pulse' : 'text-emerald-400'} />
+            <span className="text-sm font-medium">System Load: {isGenerating ? '88%' : '12%'}</span>
           </div>
-          <button className="px-6 py-2 bg-blue-600 rounded-xl text-sm font-bold hover:bg-blue-500 transition-all">
-            Pause Agents
+          <button 
+            disabled={isGenerating}
+            onClick={onComplete}
+            className={`px-6 py-2 rounded-xl text-sm font-bold transition-all shadow-lg ${
+              isGenerating 
+                ? 'bg-slate-700 text-slate-400 cursor-not-allowed' 
+                : 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-emerald-600/20'
+            }`}
+          >
+            {isGenerating ? 'Agents Working...' : 'View Timetable'}
           </button>
         </div>
       </div>

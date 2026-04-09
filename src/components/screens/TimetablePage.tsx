@@ -1,8 +1,14 @@
 import { motion } from 'motion/react';
 import { Download, RefreshCw, Filter, Share2, Printer, ChevronLeft, ChevronRight } from 'lucide-react';
-import { DAYS, TIME_SLOTS, MOCK_TIMETABLE } from '../../constants';
+import { DAYS, TIME_SLOTS } from '../../constants';
+import { TimetableEntry } from '../../types';
 
-export default function TimetablePage() {
+interface TimetablePageProps {
+  timetable: TimetableEntry[];
+  onRegenerate: () => void;
+}
+
+export default function TimetablePage({ timetable, onRegenerate }: TimetablePageProps) {
   return (
     <div className="p-8 max-w-[1600px] mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
@@ -15,7 +21,10 @@ export default function TimetablePage() {
           <button className="px-4 py-2 glass rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-white/10 transition-all">
             <Filter size={16} /> Filter
           </button>
-          <button className="px-4 py-2 glass rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-white/10 transition-all">
+          <button 
+            onClick={onRegenerate}
+            className="px-4 py-2 glass rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-white/10 transition-all"
+          >
             <RefreshCw size={16} /> Regenerate
           </button>
           <div className="h-8 w-[1px] bg-white/10 mx-2" />
@@ -55,11 +64,12 @@ export default function TimetablePage() {
                     <span className="text-xs font-bold text-slate-500">{time}</span>
                   </td>
                   {DAYS.map(day => {
-                    const entry = MOCK_TIMETABLE.find(e => e.day === day && e.time === time);
+                    const entry = timetable.find(e => e.day === day && e.time === time);
                     return (
                       <td key={`${day}-${time}`} className="p-3 border-b border-white/10 min-h-[120px] align-top">
                         {entry ? (
                           <motion.div 
+                            layoutId={`${entry.day}-${entry.time}-${entry.subject}`}
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             className={`p-4 rounded-2xl border ${entry.color} h-full flex flex-col justify-between group cursor-pointer hover:brightness-110 transition-all`}
