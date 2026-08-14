@@ -1,0 +1,6 @@
+{
+  "name": "Agentic AI Timetable System",
+  "description": "Intelligent scheduling with automated student email/message notifications for free periods and conflict resolution.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
