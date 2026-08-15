@@ -4,6 +4,7 @@
 
 The AI Timetable System is a smart web-based application designed to make college timetable management easier, faster, and more reliable. It helps administrators create and manage timetables while automatically handling classes, teachers, subjects, rooms, and scheduling conflicts.
 The system can also notify students when there is a change in their schedule, such as a teacher being unavailable, a class being cancelled, or a free period being created.
+
 ⚙️ How It Works
 1. Admin enters timetable data   
     Teachers
